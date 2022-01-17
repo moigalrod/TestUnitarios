@@ -1,9 +1,10 @@
-package org.plexus.junitapp.ejemplo.models;
+package org.test.junitapp.ejemplo.models;
 
 import org.junit.jupiter.api.Test;
-import org.plexus.junitapp.ejemplo.exceptions.DineroInsuficienteException;
+import org.test.junitapp.ejemplo.exceptions.DineroInsuficienteException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,5 +59,22 @@ class CuentaTest {
         String actual = e.getMessage();
         String esperado = "Dinero inSuficiente";
         assertEquals(esperado, actual);
+    }
+
+    @Test
+    void transferirDineroCuentas() {
+        Cuenta cuenta1 = new Cuenta("Andres", new BigDecimal("100"));
+        Cuenta cuenta2 = new Cuenta("Andres", new BigDecimal("0"));
+        Banco b = new Banco();
+        b.addCuenta(cuenta1);
+        b.addCuenta(cuenta2);
+        b.setNombre("Banco del estado");
+        b.transferir(cuenta1, cuenta2, new BigDecimal(100));
+        assertEquals(new BigDecimal("0"), cuenta1.getSaldo());
+        assertEquals(new BigDecimal("100"), cuenta2.getSaldo());
+        assertEquals(2, b.getCuentas().size());
+
+        assertEquals("Banco del estado", cuenta1.getBanco().getNombre());
+        assertTrue(b.getCuentas().stream().anyMatch(c -> c.getPersona().equals("Andres")));
     }
 }

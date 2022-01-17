@@ -1,6 +1,6 @@
-package org.plexus.junitapp.ejemplo.models;
+package org.test.junitapp.ejemplo.models;
 
-import org.plexus.junitapp.ejemplo.exceptions.DineroInsuficienteException;
+import org.test.junitapp.ejemplo.exceptions.DineroInsuficienteException;
 
 import java.math.BigDecimal;
 
@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 class Cuenta {
     private String persona;
     private BigDecimal saldo;
+    private Banco banco;
 
     public Cuenta() {
     }
@@ -15,6 +16,14 @@ class Cuenta {
     public Cuenta(String persona, BigDecimal saldo) {
         this.persona = persona;
         this.saldo = saldo;
+    }
+
+    public Banco getBanco() {
+        return banco;
+    }
+
+    public void setBanco(Banco banco) {
+        this.banco = banco;
     }
 
     public String getPersona() {
