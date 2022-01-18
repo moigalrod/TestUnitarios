@@ -1,5 +1,7 @@
 package org.test.junitapp.ejemplo.models;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.test.junitapp.ejemplo.exceptions.DineroInsuficienteException;
 
@@ -10,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class CuentaTest {
 
     @Test
+    @Disabled
+    @DisplayName("Test Nombre Cuenta")
     void testNombreCuenta() {
         Cuenta cuenta = new Cuenta();
         cuenta.setPersona("Moises");
@@ -21,6 +25,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Test Saldo Cuenta")
     void testSaldoCuenta() {
         Cuenta cuenta = new Cuenta("Andres", new BigDecimal("13.44444"));
         assertEquals(13.44444, cuenta.getSaldo().doubleValue());
@@ -28,6 +33,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Test Referencia Cuenta")
     void testReferenciaCuenta() {
         Cuenta cuenta = new Cuenta("John Doe", new BigDecimal("9999.99999"));
         Cuenta cuenta1 = new Cuenta("John Doe", new BigDecimal("9999.99999"));
@@ -35,6 +41,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Test Debito Cuenta")
     void testDebitoCuenta() {
         Cuenta cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
         cuenta.debito(new BigDecimal(100));
@@ -44,6 +51,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Test Credito Cuenta")
     void testCreditoCuenta() {
         Cuenta cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
         cuenta.credito(new BigDecimal(100));
@@ -53,6 +61,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Test Insuficiente ExceptionCuenta")
     void dineroInsuficienteExceptionCuenta() {
         Cuenta cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
         Exception e = assertThrows(DineroInsuficienteException.class, () -> cuenta.debito(new BigDecimal("1001.12345")));
@@ -62,6 +71,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Test transferir DineroCuentas")
     void transferirDineroCuentas() {
         Cuenta cuenta1 = new Cuenta("Andres", new BigDecimal("100"));
         Cuenta cuenta2 = new Cuenta("Andres", new BigDecimal("0"));
