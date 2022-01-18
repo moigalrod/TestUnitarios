@@ -147,4 +147,9 @@ class CuentaTest {
     @EnabledIfSystemProperty(named = "java.version", matches = "17.0.1")
     void testJavaVErsion17(){
     }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "JAVA_HOME", matches = "C:\\Program Files\\Java\\jdk1.8.0_202")
+    void imprimirVarEvironment() {
+    }
 }
