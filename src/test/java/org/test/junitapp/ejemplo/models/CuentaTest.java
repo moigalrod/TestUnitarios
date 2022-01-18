@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.test.junitapp.ejemplo.exceptions.DineroInsuficienteException;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,11 +69,12 @@ class CuentaTest {
         b.addCuenta(cuenta2);
         b.setNombre("Banco del estado");
         b.transferir(cuenta1, cuenta2, new BigDecimal(100));
-        assertEquals(new BigDecimal("0"), cuenta1.getSaldo());
-        assertEquals(new BigDecimal("100"), cuenta2.getSaldo());
-        assertEquals(2, b.getCuentas().size());
 
-        assertEquals("Banco del estado", cuenta1.getBanco().getNombre());
-        assertTrue(b.getCuentas().stream().anyMatch(c -> c.getPersona().equals("Andres")));
+        assertAll(() -> assertEquals(new BigDecimal("0"), cuenta1.getSaldo())
+                , () -> assertEquals(new BigDecimal("100"), cuenta2.getSaldo())
+                , () -> assertEquals(2, b.getCuentas().size())
+                , () -> assertEquals("Banco del estado", cuenta1.getBanco().getNombre())
+                , () -> assertTrue(b.getCuentas().stream().anyMatch(c -> c.getPersona().equals("Andres"))));
+
     }
 }
