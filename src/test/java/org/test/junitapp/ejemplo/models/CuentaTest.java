@@ -111,63 +111,76 @@ class CuentaTest {
 
     }
 
-    @Test
-    @EnabledOnOs(OS.WINDOWS)
-    void testSoloWindows() {
+    @Nested
+    class SistemaOperativoTest {
+        @Test
+        @EnabledOnOs(OS.WINDOWS)
+        void testSoloWindows() {
+        }
+
+        @Test
+        @EnabledOnOs({OS.LINUX, OS.MAC})
+        void testSoloLinuxMAc() {
+        }
     }
 
-    @Test
-    @EnabledOnJre(JRE.JAVA_8)
-    void testSoloJava8() {
+    @Nested
+    class JreTest {
+        @Test
+        @EnabledOnJre(JRE.JAVA_8)
+        void testSoloJava8() {
+        }
+
+        @Test
+        @EnabledOnJre(JRE.JAVA_17)
+        void testSoloJava17() {
+        }
+
+        @Test
+        @DisabledOnJre(JRE.JAVA_17)
+        void testNoJDK17() {
+        }
     }
 
-    @Test
-    @EnabledOnJre(JRE.JAVA_17)
-    void testSoloJava17() {
+    @Nested
+    class SystemPropertiesTest {
+        @Test
+        @Disabled
+        void imprimirSystemProperties() {
+            Properties p = System.getProperties();
+            p.forEach((k, v) -> System.out.println(k + " : " + v));
+        }
+
+        @Test
+        @EnabledIfSystemProperty(named = "java.version", matches = "17.0.1")
+        void testJavaVErsion17() {
+        }
+
+        @Test
+        @EnabledIfEnvironmentVariable(named = "JAVA_HOME", matches = "jdk1.8.0_202")
+        void imprimirVarEvironment() {
+        }
+
     }
 
-    @Test
-    @EnabledOnOs({OS.LINUX, OS.MAC})
-    void testSoloLinuxMAc() {
-    }
+    @Nested
+    @DisplayName("Assumtions Test")
+    class AssumtionsTest {
+        @Test
+        @DisplayName("Test Debito Cuenta Assumtion")
+        void testDebitoCuentaAssumtion() {
+            cuenta.debito(new BigDecimal(100));
+            boolean esDev = "dev".equals(System.getProperty("ENV"));
+            // Condicional all el metodo si es DEV
+            // assumeTrue(esDev);
 
-    @Test
-    @DisabledOnJre(JRE.JAVA_17)
-    void testNoJDK17() {
-    }
-
-    @Test
-    @Disabled
-    void imprimirSystemProperties() {
-        Properties p = System.getProperties();
-        p.forEach((k, v) -> System.out.println(k + " : " + v));
-    }
-
-    @Test
-    @EnabledIfSystemProperty(named = "java.version", matches = "17.0.1")
-    void testJavaVErsion17(){
-    }
-
-    @Test
-    @EnabledIfEnvironmentVariable(named = "JAVA_HOME", matches = "jdk1.8.0_202")
-    void imprimirVarEvironment() {
-    }
-
-    @Test
-    @DisplayName("Test Debito Cuenta Assumtion")
-    void testDebitoCuentaAssumtion() {
-        cuenta.debito(new BigDecimal(100));
-        boolean esDev = "dev".equals(System.getProperty("ENV"));
-        // Condicional all el metodo si es DEV
-        // assumeTrue(esDev);
-
-        // Codicional parte del metodo, si no se cumple sale como disable el test
-        assumingThat(esDev, () -> {
-            assertNotNull(cuenta.getSaldo());
-            assertEquals(1000, cuenta.getSaldo().intValue());
-            assertEquals("1000.12345", cuenta.getSaldo().toPlainString());
-        });
-
+            // Codicional parte del metodo, si no se cumple sale como disable el test
+            assumingThat(esDev, () -> {
+                assertNotNull(cuenta.getSaldo());
+                assertEquals(1000, cuenta.getSaldo().intValue());
+                assertEquals("1000.12345", cuenta.getSaldo().toPlainString());
+            });
+        }
     }
 
 }
