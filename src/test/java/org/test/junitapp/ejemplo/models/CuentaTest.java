@@ -1,15 +1,15 @@
 package org.test.junitapp.ejemplo.models;
 
-import jdk.jfr.Enabled;
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
 import org.test.junitapp.ejemplo.exceptions.DineroInsuficienteException;
 
-import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
 
 class CuentaTest {
 
@@ -149,7 +149,25 @@ class CuentaTest {
     }
 
     @Test
-    @EnabledIfEnvironmentVariable(named = "JAVA_HOME", matches = "C:\\Program Files\\Java\\jdk1.8.0_202")
+    @EnabledIfEnvironmentVariable(named = "JAVA_HOME", matches = "jdk1.8.0_202")
     void imprimirVarEvironment() {
     }
+
+    @Test
+    @DisplayName("Test Debito Cuenta Assumtion")
+    void testDebitoCuentaAssumtion() {
+        cuenta.debito(new BigDecimal(100));
+        boolean esDev = "dev".equals(System.getProperty("ENV"));
+        // Condicional all el metodo si es DEV
+        // assumeTrue(esDev);
+
+        // Codicional parte del metodo, si no se cumple sale como disable el test
+        assumingThat(esDev, () -> {
+            assertNotNull(cuenta.getSaldo());
+            assertEquals(1000, cuenta.getSaldo().intValue());
+            assertEquals("1000.12345", cuenta.getSaldo().toPlainString());
+        });
+
+    }
+
 }
