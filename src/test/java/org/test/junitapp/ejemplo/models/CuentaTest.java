@@ -11,10 +11,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.test.junitapp.ejemplo.exceptions.DineroInsuficienteException;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
@@ -47,7 +48,12 @@ class CuentaTest {
 
     @Test
     @DisplayName("Test Nombre Cuenta")
-    void testNombreCuenta() {
+    void testNombreCuenta( TestInfo info, TestReporter reporter) {
+
+        String msg = "Ejecutando: "+ info.getDisplayName() + " " + info.getTestMethod().orElseGet(null).getName();
+        System.out.println(msg);
+        reporter.publishEntry(msg);
+
         Cuenta cuenta = new Cuenta();
         cuenta.setPersona("Moises");
         String esperado = "Moises";
@@ -119,6 +125,7 @@ class CuentaTest {
 
     }
 
+    @Tag("SO")
     @Nested
     class SistemaOperativoTest {
         @Test
@@ -174,6 +181,7 @@ class CuentaTest {
     @Nested
     @DisplayName("Assumtions Test")
     class AssumtionsTest {
+        @Tag("Assumtion")
         @Test
         @DisplayName("Test Debito Cuenta Assumtion")
         void testDebitoCuentaAssumtion() {
@@ -181,7 +189,6 @@ class CuentaTest {
             boolean esDev = "dev".equals(System.getProperty("ENV"));
             // Condicional all el metodo si es DEV
             // assumeTrue(esDev);
-
             // Codicional parte del metodo, si no se cumple sale como disable el test
             assumingThat(esDev, () -> {
                 assertNotNull(cuenta.getSaldo());
@@ -202,10 +209,10 @@ class CuentaTest {
         assertEquals("1200.12345", cuenta.getSaldo().toPlainString());
     }
 
+    @Tag("Param")
     @Nested
     @DisplayName("Test Parameterized")
-
-    class PruebaParameterizedTest{
+    class PruebaParameterizedTest {
         @ParameterizedTest
         @ValueSource(strings = {"100", "200", "500", "1210.12345"})
         @DisplayName("Parameterized Test Debito Cuenta")
@@ -262,10 +269,29 @@ class CuentaTest {
             }
         }
 
-        private static List<String> montoList(){
+        private static List<String> montoList() {
             return Arrays.asList("100", "300", "1200");
         }
     }
 
+    @Nested
+    class TimeoutTest{
+        @Test
+        @Timeout(5)
+        void pruebaTimeout() throws InterruptedException {
+            TimeUnit.SECONDS.sleep(6);
+        }
+
+        @Test
+        @Timeout(value = 500, unit = TimeUnit.MILLISECONDS)
+        void pruebaTimeout2() throws InterruptedException {
+            TimeUnit.SECONDS.sleep(6);
+        }
+
+        @Test
+        void pruebaTimeout3() throws InterruptedException {
+            assertTimeout(Duration.ofSeconds(5), () ->  TimeUnit.SECONDS.sleep(6));
+        }
+    }
 
 }
