@@ -183,4 +183,15 @@ class CuentaTest {
         }
     }
 
+    @RepeatedTest(value = 5, name = "{displayName}: Repetición número {currentRepetition} de {totalRepetitions}")
+    @DisplayName("Test Credito Cuenta")
+    void testCreditoCuentaRepeated(RepetitionInfo info) {
+        cuenta.credito(new BigDecimal(100));
+        if(info.getCurrentRepetition() == 3)
+            cuenta.credito(new BigDecimal(200));
+        assertNotNull(cuenta.getSaldo());
+        assertEquals(1200, cuenta.getSaldo().intValue());
+        assertEquals("1200.12345", cuenta.getSaldo().toPlainString());
+    }
+
 }
