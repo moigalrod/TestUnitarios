@@ -48,9 +48,9 @@ class CuentaTest {
 
     @Test
     @DisplayName("Test Nombre Cuenta")
-    void testNombreCuenta( TestInfo info, TestReporter reporter) {
+    void testNombreCuenta(TestInfo info, TestReporter reporter) {
 
-        String msg = "Ejecutando: "+ info.getDisplayName() + " " + info.getTestMethod().orElseGet(null).getName();
+        String msg = "Ejecutando: " + info.getDisplayName() + " " + info.getTestMethod().orElseGet(null).getName();
         System.out.println(msg);
         reporter.publishEntry(msg);
 
@@ -275,7 +275,7 @@ class CuentaTest {
     }
 
     @Nested
-    class TimeoutTest{
+    class TimeoutTest {
         @Test
         @Timeout(5)
         void pruebaTimeout() throws InterruptedException {
@@ -290,7 +290,7 @@ class CuentaTest {
 
         @Test
         void pruebaTimeout3() throws InterruptedException {
-            assertTimeout(Duration.ofSeconds(5), () ->  TimeUnit.SECONDS.sleep(6));
+            assertTimeout(Duration.ofSeconds(5), () -> TimeUnit.SECONDS.sleep(6));
         }
     }
 
