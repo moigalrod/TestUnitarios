@@ -3,9 +3,17 @@ package org.test.junitapp.ejemplo.models;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.test.junitapp.ejemplo.exceptions.DineroInsuficienteException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -187,11 +195,77 @@ class CuentaTest {
     @DisplayName("Test Credito Cuenta")
     void testCreditoCuentaRepeated(RepetitionInfo info) {
         cuenta.credito(new BigDecimal(100));
-        if(info.getCurrentRepetition() == 3)
+        if (info.getCurrentRepetition() == 3)
             cuenta.credito(new BigDecimal(200));
         assertNotNull(cuenta.getSaldo());
         assertEquals(1200, cuenta.getSaldo().intValue());
         assertEquals("1200.12345", cuenta.getSaldo().toPlainString());
     }
+
+    @Nested
+    @DisplayName("Test Parameterized")
+
+    class PruebaParameterizedTest{
+        @ParameterizedTest
+        @ValueSource(strings = {"100", "200", "500", "1210.12345"})
+        @DisplayName("Parameterized Test Debito Cuenta")
+        void testDebitoCuentaParameterizedValueSources(String monto) {
+            //assertThrows(DineroInsuficienteException.class, () -> cuenta.debito(new BigDecimal(monto)));
+            try {
+                cuenta.debito(new BigDecimal(monto));
+                assertNotNull(cuenta.getSaldo());
+                assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+            } catch (Exception e) {
+                assertEquals(DineroInsuficienteException.class, e.getClass());
+            }
+        }
+
+        @ParameterizedTest
+        @CsvSource({"1,100", "2,200", "3,500", "4,1210.12345"})
+        @DisplayName("Parameterized Test Debito Cuenta CSV")
+        void testDebitoCuentaCsvSources(String indice, String monto) {
+            System.out.println(indice + " -> " + monto);
+            try {
+                cuenta.debito(new BigDecimal(monto));
+                assertNotNull(cuenta.getSaldo());
+                assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+            } catch (Exception e) {
+                assertEquals(DineroInsuficienteException.class, e.getClass());
+            }
+        }
+
+        @ParameterizedTest
+        @CsvFileSource(resources = "/data.csv")
+        @DisplayName("Parameterized Test Debito Cuenta CSVFile")
+        void testDebitoCuentaCsvFileSources(String monto) {
+            System.out.println(monto);
+            try {
+                cuenta.debito(new BigDecimal(monto));
+                assertNotNull(cuenta.getSaldo());
+                assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+            } catch (Exception e) {
+                assertEquals(DineroInsuficienteException.class, e.getClass());
+            }
+        }
+
+        @ParameterizedTest
+        @MethodSource("montoList")
+        @DisplayName("Parameterized Test Debito Cuenta Method")
+        void testDebitoCuentaMethodSources(String monto) {
+            System.out.println(monto);
+            try {
+                cuenta.debito(new BigDecimal(monto));
+                assertNotNull(cuenta.getSaldo());
+                assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+            } catch (Exception e) {
+                assertEquals(DineroInsuficienteException.class, e.getClass());
+            }
+        }
+
+        private static List<String> montoList(){
+            return Arrays.asList("100", "300", "1200");
+        }
+    }
+
 
 }
